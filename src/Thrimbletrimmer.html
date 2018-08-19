@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<title>Eustace W. Thrimbletrimmer Editing Suite</title>
+	
+</head>
+<body>
+	<div id="EditorContent">
+		<div class="wub-video-player">
+				<video id="wubPlayer" width="'+wubs.width+'" height="'+wubs.height+'" style="padding-top:2px;" vidID="'+wubs.vidID+'">
+					<source src="'+wubs.source+'" type="'+wubs.type+'" />
+					Your browser does not support HTML5 video.
+				</video>
+			<div class="wub-video-controls">
+				<a class="wub-video-play" title="Play/Pause"></a>
+				<div class="wub-video-seek"></div>
+				<div class="wub-video-timer">00:00</div>
+				<div class="wub-volume-box">
+					<div class="wub-volume-slider"></div>
+					<a class="wub-volume-button" title="Mute/Unmute"></a>
+				</div>
+			</div>
+			<div class="wub-video-editorControls" >
+				<div class="wub-editor-selectRange"></div>
+				<input type="checkbox" id="EndPlaybackCheckbox" />
+				<span style="font-size: 0.7em; color:#999">Stop Here</span>
+				<div style="clear:both;">
+					<div id="StartControl">
+						<input type="text" id="StartTimeStamp" value="00:00.00" /><br />
+						<input type="button" id="SetStartTimeButton" value="Set" />
+						<input type="button" id="GoToStartButton" value="Go To" />
+					</div>
+					<div id="EndControl">
+						<input type="text" id="EndTimeStamp" value="00:00.00" /><br />
+						<input type="button" id="SetEndTimeButton" value="Set" />
+						<input type="button" id="GoToEndButton" value="Go To" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="EditorDetailsPane">
+			<div>
+				Title: <br />
+				<input type="text" id="VideoTitle" value="" maxlength="91" />
+			</div>
+			<div>
+				Description:<br/>
+				<textarea id="VideoDescription" ></textarea>
+			</div>
+			<input type="button" id="SubmitButton" value="Submit" />
+		</div>
+	</div>
+</body>
+</html>

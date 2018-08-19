@@ -1,0 +1,65 @@
+.wub-video-editorControls {
+	position:relative;
+	padding:5px;
+	padding-top:0px;
+	float:left;
+	clear:both;
+	width:100%;
+}
+.wub-editor-selectRange {
+	position:relative;
+	float:left;
+	width: 80%;
+	height: 10px;
+	margin-left: 37px;
+	/*margin-top: -3px;*/
+	border: 1px solid #494949;
+
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
+	border-radius:15px;
+
+	background: #535353;
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #535353),color-stop(1, #333333));
+	background-image: -moz-linear-gradient(top, #535353, #333333);
+	background-image: linear-gradient(#535353, #333333);
+
+	box-shadow: inset 0 -3px 3px #333333;
+}
+.wub-editor-selectRange .ui-slider-handle {
+	width: 0.6em;
+	height: 0.6em;
+	top: -0.1em;
+}
+.wub-video-editorControls #StartTimeStamp, #EndTimeStamp {
+	width:75px;
+	margin:0px;
+	/*border-color:black;*/
+	border-radius:5px;
+	background-color:black;
+	color:#999;
+	font-size:0.7em;
+}
+.wub-video-editorControls #StartControl {
+	float:left;
+}
+.wub-video-editorControls #EndControl {
+	margin-right:75px;
+	float:right;
+}
+.wub-video-editorControls #EndControl #EndTimeStamp{
+	text-align:right;
+	float:right;
+}
+.wub-video-editorControls #EndPlaybackCheckbox {
+	margin-top:0px;
+}
+
+#EditorDetailsPane #VideoTitle {
+	width:640px;
+}
+
+#EditorDetailsPane #VideoDescription {
+	width:640px;
+	height:150px;
+}
