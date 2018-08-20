@@ -1,0 +1,22 @@
+[
+	{
+		"vidID": "1234",
+		"src":"oceans-clip-1234.mp4",
+		"type":"video/mp4",
+		"title":"Test Title",
+		"description":"Test Description",
+		"framerate":"24",
+		"width":"640",
+		"height":"264"
+	},
+	{
+		"vidID": "5678",
+		"src":"DB-TestClip.mp4",
+		"type":"video/mp4",
+		"title":"Desert Bus Clip",
+		"description":"A clip from Desert Bus 8.",
+		"framerate":"30",
+		"width":"640",
+		"height":"360"
+	}
+]
