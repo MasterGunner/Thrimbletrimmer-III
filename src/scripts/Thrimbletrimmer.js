@@ -297,13 +297,13 @@ var connectEditorControls = function() {
     };
     createRange();
     
-    var getTimeFormat=function(seconds){
+    var getTimeFormat = function(seconds){
             var date = new Date(null);
             date.setSeconds(seconds); //Set date based on Seconds.
             var d = parseInt((seconds % 1)*100); //Get the decimal places to two places for appending.
             return date.toISOString().substr(11, 8) + "." + d; //Get time segment of date, with two decimal places.
     };
-    var getSeconds=function(time){
+    var getSeconds = function(time){
         var timeArr = time.split(':'), //Array of hours, minutes, and seconds.
             s = 0, //Seconds total
             m = 1; //Multiplier
