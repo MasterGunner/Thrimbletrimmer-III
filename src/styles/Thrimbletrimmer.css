@@ -4,17 +4,18 @@
 
 /* base styles */
 #wubPlayer {
-    padding-top:2px;
+	padding-top:2px;
+	float: left;
 }
-.wub-video-play, .wub-volume-button {
+#wub-video-play, #wub-volume-button {
 	cursor: pointer;
 }
-.wub-video-timer {
+#wub-video-timer {
 	cursor: default;
 }
 
 /* Start of simpledark default theme */
-.wub-video-player {
+#wub-video-player-container {
 	float: left;
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
@@ -22,7 +23,7 @@
 	background-image: linear-gradient(#313131, #000000);
 }
 
-.wub-video-player .wub-video-controls {
+#wub-video-controls {
 	position: relative;
 	padding: 5px;
 	float: left;
@@ -30,12 +31,12 @@
 	width: 100%;
 }
 
-.wub-video-player .wub-video-play, .wub-video-player .wub-video-seek, .wub-video-player .wub-volume-box, .wub-video-timer {
+#wub-video-play, #wub-video-seek, #wub-volume-box, #wub-video-timer {
 	float: left;
 }
 
-/* play, pause */
-.wub-video-player .wub-video-play {
+/* Play/Pause Button*/
+#wub-video-play {
 	display: block;
 	width: 22px;
 	height: 22px;
@@ -46,22 +47,16 @@
 	transition: all 0.2s ease-in-out;
 }
 
-.wub-video-player .wub-paused-button {
-	background: url(../images/pause-icon.png) no-repeat;
-}
-
-
-.wub-video-player video {
-	float: left;
-}
-
-
-.wub-video-player .wub-video-play:hover {
+#wub-video-play:hover {
     opacity: 1;
 }
 
+#wub-video-play.wub-pause-button {
+	background: url(../images/pause-icon.png) no-repeat;
+}
+
 /* seek */
-.wub-video-player .wub-video-seek {
+#wub-video-seek {
 	position:relative;
 	width: 80%;
 	height: 10px;
@@ -75,7 +70,7 @@
 	box-shadow: inset 0 -3px 3px #333333;
 }
 
-.wub-video-player .wub-video-seek .ui-slider-handle {
+#wub-video-seek .ui-slider-handle {
 	width: 15px;
 	height: 15px;
     top: -4px;
@@ -89,11 +84,11 @@
 	box-shadow: inset 0 -3px 3px #d5d5d5;
 }
 
-.wub-video-player .wub-video-seek .ui-slider-handle.ui-state-hover {
+#wub-video-seek .ui-slider-handle.ui-state-hover {
 	background: #fff;
 }
 
-.wub-video-player .wub-video-seek .ui-slider-range {
+#wub-video-seek .ui-slider-range {
 	border-radius:15px;
 
 	background: #4cbae8;
@@ -103,7 +98,7 @@
 }
 
 /* Buffer Progress Bar */
-.wub-video-player .wub-video-seek .wub-slider-buffered {
+#wub-video-seek .wub-slider-buffered {
 	border-radius:15px;
 
 	background: rgba(211,211,211,0.2);
@@ -113,7 +108,7 @@
 }
 
 /* timer */
-.wub-video-player .wub-video-timer {
+#wub-video-timer {
 	margin-top: 5px;
 	margin-left: 5px;
 
@@ -123,7 +118,7 @@
 }
 
 /* volume */
-.wub-video-player .wub-volume-box {
+#wub-volume-box {
 	position: absolute;
 	bottom: 5px;
 	right: 10px;
@@ -135,19 +130,19 @@
 	transition: all 0.1s ease-in-out;
 }
 
-.wub-video-player .wub-volume-box:hover {
+#wub-volume-box:hover {
 	height: 135px;
 	padding-top: 5px;
 }
 
 
-.wub-video-player .wub-volume-box:hover .wub-volume-slider {
+#wub-volume-box:hover #wub-volume-slider {
 	position: relative;
 	visibility: visible;
 	opacity: 1;
 }
 
-.wub-video-player .wub-volume-slider {
+#wub-volume-slider {
 	position: relative;
 	height: 100px;
 	width: 7px;
@@ -166,7 +161,7 @@
 	transition: all 0.1s ease-in-out;
 }
 
-.wub-video-player .wub-volume-slider .ui-slider-handle {
+#wub-volume-slider .ui-slider-handle {
 	width: 12px;
 	height: 12px;
 	left: -3px;
@@ -181,11 +176,11 @@
 	box-shadow: inset 0 3px 3px #d5d5d5;
 }
 
-.wub-video-player .wub-volume-slider .ui-slider-handle.ui-state-hover {
+#wub-volume-slider .ui-slider-handle.ui-state-hover {
 	background: #fff;
 }
 
-.wub-video-player .wub-volume-slider .ui-slider-range {
+#wub-volume-slider .ui-slider-range {
 	border-radius:15px;
 
 	background: #e6e6e6;
@@ -195,7 +190,7 @@
 }
 
 /* volume button */
-.wub-video-player .wub-volume-button {
+#wub-volume-button {
 	position: absolute;
 	bottom: 0px;
 	display: block;
@@ -205,11 +200,11 @@
 	opacity: 0.8;
 }
 
-.wub-video-player .wub-volume-button:hover {
+#wub-volume-button:hover {
 	opacity: 1;
 }
 
-.wub-video-player .wub-volume-mute {
+#wub-volume-mute {
 	background: url(../images/volume-mute-icon.png) no-repeat;
 }
 
@@ -239,7 +234,7 @@
 /*
     EDITOR CONTROLS STYLING
 */
-.wub-video-editorControls {
+#wub-video-editorControls {
 	position:relative;
 	padding:5px;
 	padding-top:0px;
@@ -247,7 +242,7 @@
 	clear:both;
 	width:100%;
 }
-.wub-editor-selectRange {
+#wub-editor-selectRange {
 	position:relative;
 	float:left;
 	width: 80%;
@@ -262,7 +257,7 @@
 
 	box-shadow: inset 0 -3px 3px #333333;
 }
-.wub-editor-selectRange .ui-slider-handle {
+#wub-editor-selectRange .ui-slider-handle {
 	width: 0.6em;
 	height: 0.6em;
 	top: -0.1em;

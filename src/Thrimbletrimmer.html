@@ -14,23 +14,23 @@
 </head>
 <body>
 	<div id="EditorContent">
-		<div class="wub-video-player">
+		<div id="wub-video-player-container">
 				<!--<video id="wubPlayer" width="'+wubs.width+'" height="'+wubs.height+'" style="padding-top:2px;" vidID="'+wubs.vidID+'">
 					<source src="'+wubs.source+'" type="'+wubs.type+'" />
 					Your browser does not support HTML5 video.
 				</video>-->
 			<video id="wubPlayer"></video>
-			<div class="wub-video-controls">
-				<a class="wub-video-play" title="Play/Pause"></a>
-				<div class="wub-video-seek"></div>
-				<div class="wub-video-timer">00:00</div>
-				<div class="wub-volume-box">
-					<div class="wub-volume-slider"></div>
-					<a class="wub-volume-button" title="Mute/Unmute"></a>
+			<div id="wub-video-controls">
+				<a id="wub-video-play" title="Play/Pause" onclick="Thrimbletrimmer.play()"></a>
+				<div id="wub-video-seek"></div>
+				<div id="wub-video-timer">00:00</div>
+				<div id="wub-volume-box">
+					<div id="wub-volume-slider"></div>
+					<a id="wub-volume-button" title="Mute/Unmute" onclick="Thrimbletrimmer.mute()"></a>
 				</div>
 			</div>
-			<div class="wub-video-editorControls" >
-				<div class="wub-editor-selectRange"></div>
+			<div id="wub-video-editorControls" >
+				<div id="wub-editor-selectRange"></div>
 				<input type="checkbox" id="EndPlaybackCheckbox" />
 				<span style="font-size: 0.7em; color:#999">Stop Here</span>
 				<div style="clear:both;">
