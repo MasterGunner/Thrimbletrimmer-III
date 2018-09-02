@@ -31,18 +31,18 @@
 			</div>
 			<div id="wub-video-editorControls" >
 				<div id="wub-editor-selectRange"></div>
-				<input type="checkbox" id="EndPlaybackCheckbox" />
+				<input type="checkbox" id="EndPlaybackCheckbox" onchange="Thrimbletrimmer.limitPlayback = this.checked ? 1:0" />
 				<span style="font-size: 0.7em; color:#999">Stop Here</span>
 				<div style="clear:both;">
 					<div id="StartControl">
-						<input type="text" id="StartTimeStamp" value="00:00.00" /><br />
-						<input type="button" id="SetStartTimeButton" value="Set" />
-						<input type="button" id="GoToStartButton" value="Go To" />
+						<input type="text" id="StartTimeStamp" value="00:00.00" onchange="Thrimbletrimmer.setTimestamps(this.value, 0)" /><br />
+						<input type="button" id="SetStartTimeButton" value="Set" onclick="Thrimbletrimmer.updateTimeRange(Thrimbletrimmer.video.currentTime, Thrimbletrimmer.endSeconds)" />
+						<input type="button" id="GoToStartButton" value="Go To" onclick="Thrimbletrimmer.video.currentTime = Thrimbletrimmer.startSeconds" />
 					</div>
 					<div id="EndControl">
-						<input type="text" id="EndTimeStamp" value="00:00.00" /><br />
-						<input type="button" id="SetEndTimeButton" value="Set" />
-						<input type="button" id="GoToEndButton" value="Go To" />
+						<input type="text" id="EndTimeStamp" value="00:00.00" onchange="Thrimbletrimmer.setTimestamps(this.value, 1)" /><br />
+						<input type="button" id="SetEndTimeButton" value="Set" onclick="Thrimbletrimmer.updateTimeRange(Thrimbletrimmer.startSeconds, Thrimbletrimmer.video.currentTime)" />
+						<input type="button" id="GoToEndButton" value="Go To" onclick="Thrimbletrimmer.video.currentTime = Thrimbletrimmer.endSeconds" />
 					</div>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 				Description:<br/>
 				<textarea id="VideoDescription" ></textarea>
 			</div>
-			<input type="button" id="SubmitButton" value="Submit" />
+			<input type="button" id="SubmitButton" value="Submit" onclick="Thrimbletrimmer.submit()"/>
 		</div>
 	</div>
 

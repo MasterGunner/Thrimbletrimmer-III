@@ -38,6 +38,9 @@ var PageSetup = function() {
     //Create seek bar
     Thrimbletrimmer.setSeekBar();
 
+    //Create editor bar
+    Thrimbletrimmer.setEditorSlider();
+
     //Bind time updates
     Thrimbletrimmer.bindTimeUpdate();
 
@@ -46,134 +49,6 @@ var PageSetup = function() {
     
     //Bind play button swap
     Thrimbletrimmer.bindPlayPause();
-
-    connectEditorControls(); 
-}
-
-var connectEditorControls = function() {
-    var video = $('#wubPlayer')[0];
-
-    //get new elements
-    var $wub_editor_range 			= $('#wub-editor-selectRange');
-    var $wub_editor_limitPlayback 	= $('#EndPlaybackCheckbox');
-    var $wub_editor_start 			= $('#StartTimeStamp');
-    var $wub_editor_setStartBtn 	= $('#SetStartTimeButton');
-    var $wub_editor_gotoStartBtn	= $('#GoToStartButton');
-    var $wub_editor_stop 			= $('#EndTimeStamp');
-    var $wub_editor_setStopBtn		= $('#SetEndTimeButton');
-    var $wub_editor_gotoStopBtn		= $('#GoToEndButton');
-    
-    var $wub_editor_Title 			= $('#VideoTitle');
-    var $wub_editor_Description 	= $('#VideoDescription');
-    var $wub_editor_Submit 			= $('#SubmitButton');
-    
-    //Configure Editor Controls
-    var createRange = function() {
-        if(video.readyState) {
-            //Set initial start and end values
-            (wubs.endOffset == 0) ? video.duration:wubs.endOffset; //set end offset to the end of the video, if not set by server.
-            startSeconds = wubs.startOffset;
-            endSeconds = wubs.endOffset;
-            $wub_editor_start.val(getTimeFormat(startSeconds));
-            $wub_editor_stop.val(getTimeFormat(endSeconds));
-            
-            //Create the Segment Selection bar.
-            $wub_editor_range.slider({
-                range: true,
-                min: 0,
-                max: video.duration,
-                step: 0.01,					
-                values: [wubs.startOffset, wubs.endOffset],
-                slide: function(event, ui){
-                    startSeconds = ui.values[0];
-                    endSeconds = ui.values[1];
-                    $wub_editor_start.val(getTimeFormat(startSeconds));
-                    $wub_editor_stop.val(getTimeFormat(endSeconds));
-                }
-            });
-            
-            //Configure Start Timestamp Control
-            $wub_editor_setStartBtn.click(function() {
-                startSeconds = video.currentTime;
-                $wub_editor_start.val(getTimeFormat(video.currentTime));
-                $wub_editor_range.slider("values", [video.currentTime,$wub_editor_range.slider("values")[1]]);
-            });
-            $wub_editor_start.change(function() {
-                //Do input validation.
-                if(/^\d*:?\d*:?\d*\.?\d*$/.test($wub_editor_start.val())) {
-                    startSeconds = getSeconds($wub_editor_start.val());
-                    $wub_editor_start.val(getTimeFormat(startSeconds));
-                    $wub_editor_range.slider("values", [startSeconds,$wub_editor_range.slider("values")[1]]);
-                } else {
-                    $wub_editor_start.val(getTimeFormat(startSeconds));
-                }
-            });
-            $wub_editor_gotoStartBtn.click(function() {
-                video.currentTime = startSeconds;
-            });
-            
-            //Configure End Timestamp Control
-            $wub_editor_setStopBtn.click(function() {
-                endSeconds = video.currentTime;
-                $wub_editor_stop.val(getTimeFormat(video.currentTime));
-                $wub_editor_range.slider("values", [$wub_editor_range.slider("values")[0],video.currentTime]);
-            });
-            $wub_editor_stop.change(function() {
-                //Do input validation.
-                if(/^\d*:?\d*:?\d*\.?\d*$/.test($wub_editor_stop.val())) {
-                    endSeconds = getSeconds($wub_editor_stop.val());
-                    $wub_editor_stop.val(getTimeFormat(endSeconds));
-                    $wub_editor_range.slider("values", [$wub_editor_range.slider("values")[0],endSeconds]);
-                } else {
-                    $wub_editor_stop.val(getTimeFormat(endSeconds));
-                }
-            });
-            $wub_editor_gotoStopBtn.click(function() {
-                video.currentTime = endSeconds;
-            });
-            
-            //Prevent video from progressing beyond end timestamp (if requested)
-            $(video).on('timeupdate', function() {
-                if ($wub_editor_limitPlayback.prop('checked') && video.currentTime >= endSeconds) { 
-                    video.pause();
-                    video.currentTime = endSeconds;
-                }
-            });
-            
-            //Configure submit button
-            $wub_editor_Submit.click(function() {
-                $wub_editor_Submit.prop("disabled",true);
-                if(startSeconds >= endSeconds) {
-                    alert("End Time must be greater than Start Time");
-                    $wub_editor_Submit.prop("disabled",false);
-                } else {
-                    var wubData = {
-                        vidID:wubs.vidID,
-                        startOffset:startSeconds,
-                        endOffset:endSeconds,
-                        title:$wub_editor_Title.val(),
-                        description:$wub_editor_Description.val(),
-                        extraMetadata:wubs.extraMetadata()
-                    };
-                    var posting = $.post(wubs.submitLoc, wubData);
-                    posting.done(function(data) {
-                        alert('Successfully submitted video.\r\n' + data);
-                        //window.close();
-                    });
-                    posting.fail(function(data) {
-                        alert('Failed to submit video.\r\n' + data.status+' - '+data.responseText);
-                        console.log(wubData);
-                        $wub_editor_Submit.prop("disabled",false);
-                    });
-                }
-            });
-        } else {
-            setTimeout(createRange, 150);
-        }
-    };
-    createRange();
-    
-    
 }
 
 function ConfigureThrimbletrimmer () {
@@ -189,10 +64,17 @@ Thrimbletrimmer.videoTimer      = document.getElementById("wub-video-timer");
 Thrimbletrimmer.$volumeSlider   = $('#wub-volume-slider');
 Thrimbletrimmer.volumeButton 	= document.getElementById('wub-volume-button');
 
+Thrimbletrimmer.$wub_editor_range = $('#wub-editor-selectRange');
+Thrimbletrimmer.startTimestamp  = document.getElementById('StartTimeStamp');
+Thrimbletrimmer.endTimestamp    = document.getElementById('EndTimeStamp');
+
 
 /* Some general reused variables */
 Thrimbletrimmer._seekSliding = false; //Stops the seek bar from being updated while using it to seek.
 Thrimbletrimmer._videoVolume = 1; //Stores the last volume while the video is muted.
+Thrimbletrimmer.limitPlayback = 0; //Whether or not to continue playback after the selected end time.
+Thrimbletrimmer.startSeconds = 0;
+Thrimbletrimmer.endSeconds = 0;
 
 /* Configure JQuery Sliders */
 
@@ -248,6 +130,28 @@ Thrimbletrimmer.setVolumeSlider = function() {
     });
 }
 
+//Editor Slider
+Thrimbletrimmer.setEditorSlider = function() {
+    if(this.video.readyState) {
+        //Create the Segment Selection bar.
+        this.$wub_editor_range.slider({
+            range: true,
+            min: 0,
+            max: this.video.duration,
+            step: 0.01,					
+            values: [wubs.startOffset, wubs.endOffset],
+            slide: function(event, ui){
+                Thrimbletrimmer.updateTimeRange(ui.values[0], ui.values[1])
+            }
+        });
+
+        //Set initial start and end values
+        this.updateTimeRange(wubs.startOffset, ((wubs.endOffset == 0) ? this.video.duration:wubs.endOffset));
+    } else {
+        setTimeout(function() { Thrimbletrimmer.setEditorSlider() }, 150);
+    }
+}
+
 /* Bind Events */
 Thrimbletrimmer.bindPlayPause = function() {
     this.video.onpause = () => { this.playButton.classList.remove('wub-pause-button'); };
@@ -256,10 +160,17 @@ Thrimbletrimmer.bindPlayPause = function() {
 
 Thrimbletrimmer.bindTimeUpdate = function() {
     this.video.ontimeupdate = () => {
+        //Update Seek Bar with current video time, unless the user is actively seeking.
         var currenttime = this.video.currentTime;
         if(!this._seekSliding) {
             this.$seekBar.slider('value', currenttime);
             this.videoTimer.innerText = getTimeFormat(currenttime, false);
+        }
+
+        //Prevent video from progressing beyond end timestamp (if requested)
+        if(this.limitPlayback && this.video.currentTime > this.endSeconds) {
+            this.video.pause();
+            this.video.currentTime = this.endSeconds
         }
     };
 }
@@ -281,6 +192,54 @@ Thrimbletrimmer.mute = function() {
     };
 }
 
+Thrimbletrimmer.setTimestamps = function(value, index) {
+    if(/^\d*:?\d*:?\d*\.?\d*$/.test(value)) {
+        if(index === 0) {
+            this.updateTimeRange(getSeconds(value), this.endSeconds);
+        } else if (index === 1) {
+            this.updateTimeRange(this.startSeconds, getSeconds(value));
+        }
+    } else {
+        this.startTimestamp.value = getTimeFormat(this.startSeconds);
+        this.endTimestamp.value = getTimeFormat(this.endSeconds);
+    }
+}
+
+Thrimbletrimmer.submit = function() {
+    document.getElementById('SubmitButton').disabled = true;
+    if(this.startSeconds >= this.endSeconds) {
+        alert("End Time must be greater than Start Time");
+        document.getElementById('SubmitButton').disabled = false;
+    } else {
+        var wubData = {
+            vidID:wubs.vidID,
+            startOffset:Thrimbletrimmer.startSeconds,
+            endOffset:Thrimbletrimmer.endSeconds,
+            title:document.getElementById("VideoTitle").value,
+            description:document.getElementById("VideoDescription").value,
+            extraMetadata:wubs.extraMetadata()
+        };
+        var posting = $.post(wubs.submitLoc, wubData);
+        posting.done(function(data) {
+            alert('Successfully submitted video.\r\n' + data);
+            //window.close();
+        });
+        posting.fail(function(data) {
+            alert('Failed to submit video.\r\n' + data.status+' - '+data.responseText);
+            console.log(wubData);
+            document.getElementById('SubmitButton').disabled = false;
+        });
+    }
+}
+
+/* General Thrimbletrimmer Functions */
+Thrimbletrimmer.updateTimeRange = function(startVal, endVal) {
+    this.startSeconds = startVal;
+    this.endSeconds = endVal;
+    this.startTimestamp.value = getTimeFormat(this.startSeconds);
+    this.endTimestamp.value = getTimeFormat(this.endSeconds);
+    this.$wub_editor_range.slider("values", [this.startSeconds,this.endSeconds]);
+}
 
 
 }
