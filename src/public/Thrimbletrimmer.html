@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<title>Eustace W. Thrimbletrimmer Editing Suite</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<script src="scripts/Thrimbletrimmer.js"></script>
+	
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css" />
+	<link rel="stylesheet" href="styles/Thrimbletrimmer.css" />
+</head>
+<body>
+	<div id="EditorContent">
+		<div id="wub-video-player-container">
+				<!--<video id="wubPlayer" width="'+wubs.width+'" height="'+wubs.height+'" style="padding-top:2px;" vidID="'+wubs.vidID+'">
+					<source src="'+wubs.source+'" type="'+wubs.type+'" />
+					Your browser does not support HTML5 video.
+				</video>-->
+			<video id="wubPlayer"></video>
+			<div id="wub-video-controls">
+				<a id="wub-video-play" title="Play/Pause" onclick="Thrimbletrimmer.play()"></a>
+				<div id="wub-video-seek"></div>
+				<div id="wub-video-timer">00:00</div>
+				<div id="wub-volume-box">
+					<div id="wub-volume-slider"></div>
+					<a id="wub-volume-button" title="Mute/Unmute" onclick="Thrimbletrimmer.mute()"></a>
+				</div>
+			</div>
+			<div id="wub-video-editorControls" >
+				<div id="wub-editor-selectRange"></div>
+				<input type="checkbox" id="EndPlaybackCheckbox" onchange="Thrimbletrimmer.limitPlayback = this.checked ? 1:0" />
+				<span style="font-size: 0.7em; color:#999">Stop Here</span>
+				<div style="clear:both;">
+					<div id="StartControl">
+						<input type="text" id="StartTimeStamp" value="00:00.00" onchange="Thrimbletrimmer.setTimestamps(this.value, 0)" /><br />
+						<input type="button" id="SetStartTimeButton" value="Set" onclick="Thrimbletrimmer.updateTimeRange(Thrimbletrimmer.video.currentTime, Thrimbletrimmer.endSeconds)" />
+						<input type="button" id="GoToStartButton" value="Go To" onclick="Thrimbletrimmer.video.currentTime = Thrimbletrimmer.startSeconds" />
+					</div>
+					<div id="EndControl">
+						<input type="text" id="EndTimeStamp" value="00:00.00" onchange="Thrimbletrimmer.setTimestamps(this.value, 1)" /><br />
+						<input type="button" id="SetEndTimeButton" value="Set" onclick="Thrimbletrimmer.updateTimeRange(Thrimbletrimmer.startSeconds, Thrimbletrimmer.video.currentTime)" />
+						<input type="button" id="GoToEndButton" value="Go To" onclick="Thrimbletrimmer.video.currentTime = Thrimbletrimmer.endSeconds" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="EditorDetailsPane">
+			<div>
+				Title: <br />
+				<input type="text" id="VideoTitle" value="" maxlength="91" />
+			</div>
+			<div>
+				Description:<br/>
+				<textarea id="VideoDescription" ></textarea>
+			</div>
+			<input type="button" id="SubmitButton" value="Submit" onclick="Thrimbletrimmer.submit()"/>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		PageSetup();
+	</script>
+</body>
+</html>

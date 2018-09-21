@@ -1,0 +1,31 @@
+On page load, inclued scriptlink to Google's API library, and a function to call when that library has loaded.
+    <script src="https://apis.google.com/js/platform.js?onload=onGLoad" async defer></script>
+
+Apparently I also had a setTimeout running to check if the "onGLoad" function had run after half a second, and if not, run that function anyways.
+
+Within the onGLoad function, it sends a call to the server to ask for it's AppID (or if AuthOverride is enabled, which skips the next steps, but if faked leaves the user without a sesson token).
+    $.get('/getGoogleID' ...
+
+With the AppID, I then call the gapi library to construct the Google Sign-In check. The App ID is needed because that defines in Google's back-end what permissions I'm asking for (in this case, just their email).
+    If the user is not signed in to Google, the Editor content is hidden and a button for Google Sign In is displayed.
+
+If the user is logged in, Google's API gives me an ID Token, which I then pass back to the server for authentication.
+    xhr.open('POST', '/tokensignin');
+    ...
+    xhr.send('id_token=' + id_token);
+
+On the server side, when it gets the ID Token, it has imported its own Google Auth API Library, which it passes the ID Token into.
+    If the token is verified, I generate a session ID to pass back to the user.
+    Because I'm a lazy hack with no clue what they're doing, Session IDs were a random number from 0-10,0000; stored in an array along with the generation date.
+    Whenever a new Session ID was generated, I'd check for any in the array older than 12 hours and remove them. If there were more than 5000 items in the array, I'd just reset it... for "Performance".
+
+Anyways, back on the front end side, if I got a Session ID back, I'd store it in a hidden field on the page and show the Editor Content.
+
+Once that whole wackiness was done, I'd then start the JavaScript to actually load the real page content.
+
+The call for the video location & details would include the Session ID
+    $.get('/getwubs/'+videoID+'?SessionId='+$('#g-signin-sessionId').text() ...
+The Session ID would be compared against the array, and if it existed, the video information would be returned.
+
+The call to submit edit information worked the same way, passing along the session ID (in some convoluted manner), which would be checked against the array before accepting and validating the edit details.
+
