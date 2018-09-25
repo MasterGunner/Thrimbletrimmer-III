@@ -10,6 +10,10 @@ dotenv.config({ path: ".env.development" });
 // Create Express server
 const app = express();
 
+// Controllers (route handlers)
+import * as homeController from "./controllers/home";
+import * as videoController from "./controllers/video";
+
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json());
@@ -17,14 +21,11 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(__dirname + '/public'));
 //app.use(express.static('Constants.VIDEOSLOCATION'))
 
-app.get('/', function (req, res) {
-    var indexPage = '';
-    // WubloaderIntegration.getVideos().forEach(function(video) {
-    //     indexPage += '<li><a href="/Thrimbletrimmer.html?Video='+video[0].vidID+'">'+video[0].vidID+'</a></li>'
-    // });
-    indexPage = '<body><h1>Welcome to Thrimbletrimmer!</h1><ul>' + indexPage + '</ul></body>'
-    res.type('html');
-    res.send(indexPage);
-});
+/**
+ * Primary app routes.
+ */
+app.get("/", homeController.index);
+app.get('/getVideo/:a?', videoController.getVideo);
+app.post('/setVideo', videoController.submitVideo);
 
 export default app;

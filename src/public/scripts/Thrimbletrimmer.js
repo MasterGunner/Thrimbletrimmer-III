@@ -1,57 +1,66 @@
-var wubs = {
-    "vidID": "5678",
-    "source":"videos/DB-TestClip.mp4",
-    "type":"video/mp4",
-    "title":"Desert Bus Clip",
-    "description":"A clip from Desert Bus 8.",
-    "framerate":"30",
-    "width":"640",
-    "height":"360",
-    "startOffset": "10",
-    "endOffset": "591.926213",
-    "deleteOnSubmit": "true",
-    "submitLoc":'/setwubs',
-    extraMetadata:function(){return [];}
-}
+// var wubs = {id: '2549',
+//     start: 10,
+//     end: 591.926213,
+//     title: 'Desert Bus Clip',
+//     description: 'A clip from Desert Bus.',
+//     source: 'videos/DB-TestClip.mp4'}
 
 var Thrimbletrimmer = {};
 
 var PageSetup = function() {
+    if(window.location.search.match(/video=(.*?)(&|$)/i)) {
+        var videoID = window.location.search.match(/video=(.*?)(&|$)/i)[1];
+        $.getJSON('/getVideo/'+videoID, (data) => {
+            //Create the video player elements
+            createVideoPlayer(data);
+
+            //Start hooking Thrimbletrimmer into page elements.
+            ConfigureThrimbletrimmer(data);            
+
+            //Create seek bar
+            Thrimbletrimmer.setSeekBar();
+
+            //Create editor bar
+            Thrimbletrimmer.setEditorSlider();
+
+            //Bind time updates
+            Thrimbletrimmer.bindTimeUpdate();
+
+            //Create volume slider
+            Thrimbletrimmer.setVolumeSlider();
+            
+            //Bind play button swap
+            Thrimbletrimmer.bindPlayPause();
+        }).fail((x) => {
+            $('#EditorContent').prepend('<h1>Requested video unavailable or previously submitted.</h1>');
+        });
+    } else {
+        $('#EditorContent').prepend('<h1>No video requested.</h1>');
+    }
+}
+
+function createVideoPlayer(data) {
+    data = JSON.parse(data);
     var videoPlayer = document.getElementById("wubPlayer");
     var videoTimer = document.getElementById("wub-video-timer");
     var videoTitle = document.getElementById("VideoTitle");
     var videoDescription = document.getElementById("VideoDescription");
 
-    var scaling = wubs.width/640;
-    var videoPlayerHTML =   `<video id="wubPlayer" width="`+wubs.width*scaling+`" height="`+wubs.height*scaling+`" vidID="`+wubs.vidID+`" onclick="Thrimbletrimmer.play()">
-                                <source src="`+wubs.source+`" type="`+wubs.type+`" />
+    var videoPlayerHTML =   `<video id="wubPlayer" width="640" height=360" vidID="`+data.vidID+`" onclick="Thrimbletrimmer.play()">
+                                <source src="`+data.source+`" type="video/mp4" />
                                 Your browser does not support HTML5 video.
                             </video>`;
 
     videoPlayer.outerHTML = videoPlayerHTML;
-    videoTimer.innerText = getTimeFormat(wubs.startOffset, false);
-    videoTitle.value = wubs.title;
-    videoDescription.value = wubs.description;
-
-    ConfigureThrimbletrimmer();
-
-    //Create seek bar
-    Thrimbletrimmer.setSeekBar();
-
-    //Create editor bar
-    Thrimbletrimmer.setEditorSlider();
-
-    //Bind time updates
-    Thrimbletrimmer.bindTimeUpdate();
-
-    //Create volume slider
-    Thrimbletrimmer.setVolumeSlider();
-    
-    //Bind play button swap
-    Thrimbletrimmer.bindPlayPause();
+    videoTimer.innerText = getTimeFormat(data.start, false);
+    videoTitle.value = data.title;
+    videoDescription.value = data.description;
 }
 
-function ConfigureThrimbletrimmer () {
+function ConfigureThrimbletrimmer (wubs) {
+
+/* The video details from the server */
+Thrimbletrimmer.wubs = JSON.parse(wubs);
 
 /* Get frequently reused elements */
 Thrimbletrimmer.video           = document.getElementById("wubPlayer");
@@ -83,7 +92,7 @@ Thrimbletrimmer.setSeekBar = function () {
     if(this.video.readyState) {
         var video_duration = this.video.duration;
         this.$seekBar.slider({
-            value: wubs.startOffset,
+            value: Thrimbletrimmer.wubs.start,
             step: 0.01,
             orientation: "horizontal",
             range: "min",
@@ -97,7 +106,7 @@ Thrimbletrimmer.setSeekBar = function () {
                 this._seekSliding = false;
             }
         });
-        this.video.currentTime = wubs.startOffset; //Set initial time value for the video.
+        this.video.currentTime = Thrimbletrimmer.wubs.start; //Set initial time value for the video.
         //Add buffer progress bar.
         var bufferBar = this.$seekBar.append('<span id="ProgressBar" class="wub-slider-buffered ui-slider-range" ></span>');
         $('#wubPlayer').bind('progress updateMediaState', () => {
@@ -139,14 +148,14 @@ Thrimbletrimmer.setEditorSlider = function() {
             min: 0,
             max: this.video.duration,
             step: 0.01,					
-            values: [wubs.startOffset, wubs.endOffset],
+            values: [Thrimbletrimmer.wubs.start, Thrimbletrimmer.wubs.end],
             slide: function(event, ui){
                 Thrimbletrimmer.updateTimeRange(ui.values[0], ui.values[1])
             }
         });
 
         //Set initial start and end values
-        this.updateTimeRange(wubs.startOffset, ((wubs.endOffset == 0) ? this.video.duration:wubs.endOffset));
+        this.updateTimeRange(Thrimbletrimmer.wubs.start, ((Thrimbletrimmer.wubs.end == 0) ? this.video.duration:Thrimbletrimmer.wubs.end));
     } else {
         setTimeout(function() { Thrimbletrimmer.setEditorSlider() }, 150);
     }
@@ -212,14 +221,13 @@ Thrimbletrimmer.submit = function() {
         document.getElementById('SubmitButton').disabled = false;
     } else {
         var wubData = {
-            vidID:wubs.vidID,
-            startOffset:Thrimbletrimmer.startSeconds,
-            endOffset:Thrimbletrimmer.endSeconds,
+            id:Thrimbletrimmer.wubs.id,
+            start:Thrimbletrimmer.startSeconds,
+            end:Thrimbletrimmer.endSeconds,
             title:document.getElementById("VideoTitle").value,
-            description:document.getElementById("VideoDescription").value,
-            extraMetadata:wubs.extraMetadata()
+            description:document.getElementById("VideoDescription").value
         };
-        var posting = $.post(wubs.submitLoc, wubData);
+        var posting = $.post('/setVideo', wubData);
         posting.done(function(data) {
             alert('Successfully submitted video.\r\n' + data);
             //window.close();
