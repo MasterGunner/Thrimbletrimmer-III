@@ -2,3 +2,9 @@ New Wubloader Integration
 Write better build script with GULP (including minifying and packaging the Public folder)
 Authentication & Session Management
 "Night Mode" and cookie to support it.
+
+"Queue" page to show videos currently awaiting edits (and who claimed them)
+Separate queue for RDPs.
+After video submission, redirect to queue page.
+
+J/K/L as keyboard shortcuts to move forward/back by 5 seconds, and pause.

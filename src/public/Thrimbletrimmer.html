@@ -57,6 +57,17 @@
 				<textarea id="VideoDescription" ></textarea>
 			</div>
 			<input type="button" id="SubmitButton" value="Submit" onclick="Thrimbletrimmer.submit()"/>
+			<span id="NightModeToggle">
+				<input type="checkbox" id="NightModeToggleCheckBox" onclick="toggleDarkMode()">
+				<label for="NightModeToggleCheckBox">Night Mode</label>
+			</span>
+			<a type="button" id="HelpButton" href="JavaScript:$('#HelpPane').toggle()">Help</a>
+		</div>
+		<div id="HelpPane" style="display:none;">
+			<ul>
+				<li>J/K/L - Back 5 seconds, Play/Pause, Advance 5 seconds</li>
+				<li>,/. - Back 0.1 seconds, Advance 0.1 seconds</li>
+			</ul>
 		</div>
 	</div>
 

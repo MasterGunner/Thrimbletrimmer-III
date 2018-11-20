@@ -2,6 +2,15 @@
     ThrimbleTrimmer Styling 
 */
 
+/* General Page Styling */
+body.dark {
+	background-color:darkgrey;
+}
+
+#EditorContent {
+	width:640px;
+}
+
 /* base styles */
 #wubPlayer {
 	padding-top:2px;
@@ -298,4 +307,16 @@
 #VideoDescription {
 	width:640px;
 	height:150px;
+}
+
+#NightModeToggle, #HelpButton {
+	float:right;
+}
+
+#NightModeToggle {
+	margin-left:10px;
+}
+
+#HelpButton {
+	color:black;
 }

@@ -8,6 +8,11 @@
 var Thrimbletrimmer = {};
 
 var PageSetup = function() {
+    if (document.cookie.split(';').filter((item) => item.includes('darkMode=1')).length) {
+        $('body').addClass('dark');
+        $("#NightModeToggleCheckBox").prop("checked", true);
+    }
+
     if(window.location.search.match(/video=(.*?)(&|$)/i)) {
         var videoID = window.location.search.match(/video=(.*?)(&|$)/i)[1];
         $.getJSON('/getVideo/'+videoID, (data) => {
@@ -15,27 +20,21 @@ var PageSetup = function() {
             createVideoPlayer(data);
 
             //Start hooking Thrimbletrimmer into page elements.
-            ConfigureThrimbletrimmer(data);            
-
-            //Create seek bar
-            Thrimbletrimmer.setSeekBar();
-
-            //Create editor bar
-            Thrimbletrimmer.setEditorSlider();
-
-            //Bind time updates
-            Thrimbletrimmer.bindTimeUpdate();
-
-            //Create volume slider
-            Thrimbletrimmer.setVolumeSlider();
-            
-            //Bind play button swap
-            Thrimbletrimmer.bindPlayPause();
+            ConfigureThrimbletrimmer(data);
         }).fail((x) => {
             $('#EditorContent').prepend('<h1>Requested video unavailable or previously submitted.</h1>');
         });
     } else {
         $('#EditorContent').prepend('<h1>No video requested.</h1>');
+    }
+}
+
+function toggleDarkMode() {
+    $('body').toggleClass('dark');
+    if(!!$('body.dark').length) {
+        document.cookie = "darkMode=1; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+    } else {
+        document.cookie = "darkMode=0";
     }
 }
 
@@ -121,6 +120,7 @@ Thrimbletrimmer.setSeekBar = function () {
         setTimeout(function() { Thrimbletrimmer.setSeekBar() }, 150);
     }
 }
+Thrimbletrimmer.setSeekBar();
 
 //Volume Slider
 Thrimbletrimmer.setVolumeSlider = function() {
@@ -138,6 +138,7 @@ Thrimbletrimmer.setVolumeSlider = function() {
         }
     });
 }
+Thrimbletrimmer.setVolumeSlider();
 
 //Editor Slider
 Thrimbletrimmer.setEditorSlider = function() {
@@ -160,12 +161,14 @@ Thrimbletrimmer.setEditorSlider = function() {
         setTimeout(function() { Thrimbletrimmer.setEditorSlider() }, 150);
     }
 }
+Thrimbletrimmer.setEditorSlider();
 
 /* Bind Events */
 Thrimbletrimmer.bindPlayPause = function() {
     this.video.onpause = () => { this.playButton.classList.remove('wub-pause-button'); };
     this.video.onplay = () => { this.playButton.classList.add('wub-pause-button'); };
 }
+Thrimbletrimmer.bindPlayPause();
 
 Thrimbletrimmer.bindTimeUpdate = function() {
     this.video.ontimeupdate = () => {
@@ -183,6 +186,7 @@ Thrimbletrimmer.bindTimeUpdate = function() {
         }
     };
 }
+Thrimbletrimmer.bindTimeUpdate();
 
 /* Button Actions */
 Thrimbletrimmer.play = function() {
@@ -240,6 +244,37 @@ Thrimbletrimmer.submit = function() {
     }
 }
 
+/* Binding keyboard shortcuts */
+Thrimbletrimmer.setKeyboardShortcuts = function() {
+    document.addEventListener('keypress', (event) => {
+        if(event.target.nodeName == "BODY") {
+            switch(event.key) {
+                case "j":
+                    Thrimbletrimmer.video.currentTime -= 5;
+                    break;
+                case "k":
+                    Thrimbletrimmer.play();
+                    break;
+                case "l":
+                    Thrimbletrimmer.video.currentTime += 5;
+                    break;
+                case ",":
+                    Thrimbletrimmer.video.currentTime -= 0.1;
+                    break;
+                case ".":
+                    Thrimbletrimmer.video.currentTime += 0.1;
+                    break;
+            }
+        }
+
+        // const keyName = event.key;
+        // console.log('keypress event\n\n' + 'key: ' + keyName);
+        // console.log(event.target.nodeName);
+    });
+}
+Thrimbletrimmer.setKeyboardShortcuts();
+
+
 /* General Thrimbletrimmer Functions */
 Thrimbletrimmer.updateTimeRange = function(startVal, endVal) {
     this.startSeconds = startVal;
@@ -248,7 +283,6 @@ Thrimbletrimmer.updateTimeRange = function(startVal, endVal) {
     this.endTimestamp.value = getTimeFormat(this.endSeconds);
     this.$wub_editor_range.slider("values", [this.startSeconds,this.endSeconds]);
 }
-
 
 }
 
